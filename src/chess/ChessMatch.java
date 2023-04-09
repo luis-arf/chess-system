@@ -38,9 +38,18 @@ public class ChessMatch {
 		return capturedPiece;
 	}
 
+	/**
+	 * Valida se a peça de origem existe e se existir verifica se ela tem movimentos possiveis
+	 * @param source Posicao da peca de origem
+	 */
 	private void validadeSourcePosition(Position source) {
 		if( !board.thereIsAPiece(source) )
 			throw new ChessException("There is no piece on source position");
+		if( !board.piece(source).isThereAnyPossibleMove() )
+			throw new ChessException("There is no possibles moves for the chosen piece");
+		
+			
+			
 
 	}
 
