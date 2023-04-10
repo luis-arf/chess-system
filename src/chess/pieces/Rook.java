@@ -69,11 +69,11 @@ public class Rook extends ChessPiece{
 		// testa se existe mais uma posicao e se essa posicao é de uma peca adversaria
 		if( getBoard().positionExists(p) && IsThereOpponentPiece(p) )
 			mat[p.getRow()][p.getColumn()] = true;
-		
-		
 			
 		return mat;
 	}
+	
+
 
 	@Override
 	public String toString() {
