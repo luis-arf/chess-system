@@ -21,7 +21,9 @@ public class Board {
 	}
 	
 	public Piece piece (Position pos) {
-		return piece(pos.getRow(),pos.getColumn());
+		//return piece(pos.getRow(),pos.getColumn());
+		return pieces[pos.getRow()][pos.getColumn()];
+
 	}
 
 	public void placePiece(Piece piece, Position pos) {
@@ -59,7 +61,7 @@ public class Board {
 	}
 	
 	private boolean positionExists(int row, int column) {
-		return row >= 0 && row<= rows && column >=0 && column <= columns; 
+		return row >= 0 && row< rows && column >=0 && column < columns; 
 	}
 
 	public int getRows() {

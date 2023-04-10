@@ -6,14 +6,24 @@ import boardgame.Position;
 import chess.pieces.King;
 import chess.pieces.Rook;
 
+/**
+ * Representa as Regras de negocio de um jogo de xadrez
+ * 
+ * @author LUIS ARF
+ *
+ */
 public class ChessMatch {
-	private Board board;
+	private Board board; // tabuleiro do jogo
 	
 	public ChessMatch() {
 		board = new Board(8, 8);
 		initialSetup();
 	}
 
+	/**
+	 *
+	 * @return Retorna todas as peças de um jogo. 
+	 */
 	public ChessPiece[][] getPieces(){
 		ChessPiece[][]mat = new ChessPiece[board.getRows()][board.getColumns()];
 		for (int i =0; i<mat.length; i++)
@@ -27,6 +37,7 @@ public class ChessMatch {
 		Position source = sourcePosition.toPosition();
 		Position target = targetPosition.toPosition();
 		validadeSourcePosition(source);
+		validadeTargetPosition(source, target);
 		return (ChessPiece) makeMove(source,target);
 		
 	}
@@ -47,10 +58,19 @@ public class ChessMatch {
 			throw new ChessException("There is no piece on source position");
 		if( !board.piece(source).isThereAnyPossibleMove() )
 			throw new ChessException("There is no possibles moves for the chosen piece");
-		
-			
-			
+	}
+	
+	/**
+	 * 
+	 * Valida se a peça de origem pode ser movida para o destino
 
+	 * @param source Origem da peça
+	 * @param target Destino da peca
+	 */
+	private void validadeTargetPosition (Position source, Position target) {
+		if( !board.piece(source).possibleMove(target) )
+			throw new ChessException("The chosen piece can´t move to target position");
+		
 	}
 
 	private void placeNewPiece(char column,int row,ChessPiece piece) {
