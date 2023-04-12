@@ -1,8 +1,12 @@
 package ChessConsole;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
+import boardgame.Piece;
 import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.ChessPosition;
@@ -37,9 +41,10 @@ public class UI {
 		System.out.flush();
 	}
 	
-	
+
 	public static void printMatch(ChessMatch match) {
 		printBoard(match.getPieces());
+		printCapturedPieces(match.getCapturedPieces());
 		System.out.println("Turn: " + match.getTurn() );
 		System.out.println("Current Player: " + match.getCurrentPlayer() );
 		System.out.println();
@@ -87,6 +92,39 @@ public class UI {
 			throw new InputMismatchException("Error reading ChessPosition. Valid values are from a1 to h8");
 		}
 	}
+
+	private static void printCapturedPieces( List<ChessPiece> pieces ) {
+		/*
+		List<ChessPiece> pieceWhite = new ArrayList<>();
+		List<ChessPiece> pieceBlack = new ArrayList<>();
+		
+		for ( ChessPiece p : pieces ) {
+			if( p.getColor() == Color.WHITE )
+				pieceWhite.add(p);
+			else
+				pieceBlack.add(p);
+		}
+		*/
+		List<ChessPiece> pieceWhite = pieces.stream().filter( x -> x.getColor() == Color.WHITE).collect(Collectors.toList());
+		List<ChessPiece> pieceBlack = pieces.stream().filter( x -> x.getColor() == Color.BLACK).collect(Collectors.toList());
+		
+		System.out.println();
+		System.out.println("Captured Pieces");
+	
+		System.out.print("WHITE: ");
+		System.out.print(ANSI_WHITE);
+		System.out.println(pieceWhite);
+		System.out.print(ANSI_RESET);
+		
+		System.out.print("BLACK: "); 
+		System.out.print(ANSI_YELLOW);
+		System.out.println(pieceBlack);
+		System.out.print(ANSI_RESET);
+		
+		System.out.println();
+	}
+	
+	
 	
 	private static void printPiece(ChessPiece piece,boolean background) {
 		if( background )
