@@ -47,6 +47,8 @@ public class UI {
 		printCapturedPieces(match.getCapturedPieces());
 		System.out.println("Turn: " + match.getTurn() );
 		System.out.println("Current Player: " + match.getCurrentPlayer() );
+		if( match.isCheck() )
+			System.out.println("CHECK!");
 		System.out.println();
 	
 	}

@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import boardgame.Board;
 import boardgame.Piece;
@@ -19,6 +20,7 @@ public class ChessMatch {
 	private Board board; 	// tabuleiro do jogo
 	private int turn;		// turno do jogo
 	private Color currentPlayer;	// cor do jogador
+	private boolean isCheck;		// indica se o jogo se encontra em xeque
 	private List<ChessPiece> capturedPieces = new ArrayList<>();	// lista de pecas capturadas
 	private List<ChessPiece> piecesOnTheBoard = new ArrayList<>();  // lista de pecas no tabuleiro
 	
@@ -50,6 +52,10 @@ public class ChessMatch {
 		return turn;
 	}
 	
+	public boolean isCheck() {
+		return isCheck;
+	}
+	
 	/**
 	 * 
 	 * @return Retorna a cor do jogador atual
@@ -63,9 +69,19 @@ public class ChessMatch {
 		Position target = targetPosition.toPosition();
 		validadeSourcePosition(source);
 		validadeTargetPosition(source, target);
-		nextTurn();
-		return (ChessPiece) makeMove(source,target);
+		Piece capturedPiece = makeMove(source,target);
 		
+		// Verifica se eu coloco meu rei em cheque
+		if(testCheck(currentPlayer)) {
+			undoMove(source, target, capturedPiece);  // se sim desfaço o movimento
+			throw new ChessException("You can´t put yourself in check!");
+		}
+		
+		// Verifica se eu deixo o rei adversario em xeque
+		isCheck = testCheck( opponent(currentPlayer) );
+		
+		nextTurn();
+		return (ChessPiece) capturedPiece;
 	}
 	
 	public boolean[][] possibleMoves(ChessPosition sourcePosition){
@@ -82,6 +98,54 @@ public class ChessMatch {
 			piecesOnTheBoard.remove(capturedPiece);
 		}
 		return capturedPiece;
+	}
+
+	
+	// desfaz um movimento invalido (exemplo quando se poe seu proprio rei em xeque)
+	private void undoMove(Position source, Position target,Piece capturedPiece) {
+		Piece p = board.removePiece(target);
+		board.placePiece(p, source);
+		
+		if( capturedPiece != null ) {
+			board.placePiece(capturedPiece, target);
+			capturedPieces.remove(capturedPiece);
+			piecesOnTheBoard.add((ChessPiece) capturedPiece);
+		}
+	}
+
+	// retora o rei da cor especificada
+	private ChessPiece king(Color color) {
+		List<ChessPiece> list = piecesOnColor(color);
+		
+		for( ChessPiece p : list )
+			if( p instanceof King )
+				return p;
+		
+		throw new IllegalStateException("Nao foi encontrado o rei da cor: " + color);
+	}
+
+	// Retorna uma lista de todas as pecas dessa cor que se encontra no tabuleiro
+	private List<ChessPiece> piecesOnColor(Color color) {
+		return piecesOnTheBoard.stream().filter( x -> x.getColor() == color).collect(Collectors.toList());
+	}
+
+	// retorna a cor do oponente
+	private Color opponent(Color color) {
+		return (color == Color.WHITE)? Color.BLACK : Color.WHITE;
+	}
+
+	// testa se o rei da referida cor se encontra em cheque
+	private boolean testCheck(Color color) {
+		Position kingPosition = king(color).getChessPosition().toPosition(); // posicao do rei na matriz
+		List<ChessPiece> opponentPieces = piecesOnColor( opponent(color) );  // pecas de cor diferente do rei
+		
+		for( ChessPiece p : opponentPieces ) { // varre todas as peças do adversario
+			boolean [][] mat = p.possiblesMoves(); // retorna todos os movimentos validos da peca especificada
+			if( mat[kingPosition.getRow()][kingPosition.getColumn()] )	// se for um movimento valido retorna true
+				return true; //e a peca se encontra em xeque
+		}
+		
+		return false;
 	}
 
 	/**
