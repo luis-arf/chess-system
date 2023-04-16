@@ -100,20 +100,21 @@ public class ChessMatch {
 	}
 	
 	private Piece makeMove(Position source, Position target) {
-		Piece p = board.removePiece(source);
+		ChessPiece p = (ChessPiece) board.removePiece(source);
 		Piece capturedPiece = board.removePiece(target);
 		board.placePiece(p, target);
 		if( capturedPiece != null ) {
 			capturedPieces.add((ChessPiece) capturedPiece);
 			piecesOnTheBoard.remove(capturedPiece);
 		}
+		p.increaseMoveCount();
 		return capturedPiece;
 	}
 
 	
 	// desfaz um movimento invalido (exemplo quando se poe seu proprio rei em xeque)
 	private void undoMove(Position source, Position target,Piece capturedPiece) {
-		Piece p = board.removePiece(target);
+		ChessPiece p = (ChessPiece) board.removePiece(target);
 		board.placePiece(p, source);
 		
 		if( capturedPiece != null ) {
@@ -121,6 +122,7 @@ public class ChessMatch {
 			capturedPieces.remove(capturedPiece);
 			piecesOnTheBoard.add((ChessPiece) capturedPiece);
 		}
+		p.decreaseMoveCount();
 	}
 
 	// retora o rei da cor especificada
