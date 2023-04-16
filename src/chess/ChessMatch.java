@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,8 @@ public class ChessMatch {
 	private int turn;		// turno do jogo
 	private Color currentPlayer;	// cor do jogador
 	private boolean isCheck;		// indica se o jogo se encontra em xeque
+	private boolean isCheckMate;	// indica se a um xeque-mate;
+	
 	private List<ChessPiece> capturedPieces = new ArrayList<>();	// lista de pecas capturadas
 	private List<ChessPiece> piecesOnTheBoard = new ArrayList<>();  // lista de pecas no tabuleiro
 	
@@ -56,6 +59,10 @@ public class ChessMatch {
 		return isCheck;
 	}
 	
+	public boolean isCheckMate() {
+		return isCheckMate;
+	}
+
 	/**
 	 * 
 	 * @return Retorna a cor do jogador atual
@@ -79,8 +86,11 @@ public class ChessMatch {
 		
 		// Verifica se eu deixo o rei adversario em xeque
 		isCheck = testCheck( opponent(currentPlayer) );
+		isCheckMate = testCheckMate( opponent(currentPlayer));
 		
-		nextTurn();
+		if( !isCheckMate)
+			nextTurn();
+		
 		return (ChessPiece) capturedPiece;
 	}
 	
@@ -114,12 +124,12 @@ public class ChessMatch {
 	}
 
 	// retora o rei da cor especificada
-	private ChessPiece king(Color color) {
+	private King king(Color color) {
 		List<ChessPiece> list = piecesOnColor(color);
 		
 		for( ChessPiece p : list )
 			if( p instanceof King )
-				return p;
+				return (King) p;
 		
 		throw new IllegalStateException("Nao foi encontrado o rei da cor: " + color);
 	}
@@ -146,6 +156,70 @@ public class ChessMatch {
 		}
 		
 		return false;
+	}
+	
+	/** Retorna uma peca que estiver ocasionando o xeque
+	 * Se a cor for Color.WHITE Retorna a peca da cor Color.BLACK
+	 * se não houver xeque, retorna null 
+	 */
+	private ChessPiece getPieceInCheck(Color color) {
+		Position kingPosition = king(color).getChessPosition().toPosition(); // posicao do rei na matriz
+		List<ChessPiece> opponentPieces = piecesOnColor( opponent(color) );  // pecas de cor diferente do rei
+		
+		for( ChessPiece p : opponentPieces ) { // varre todas as peças do adversario
+			boolean [][] mat = p.possiblesMoves(); // retorna todos os movimentos validos da peca especificada
+			if( mat[kingPosition.getRow()][kingPosition.getColumn()] ) { // se for um movimento valido retorna true
+				return p;
+			}
+		}
+		
+		return null;
+	}
+	
+	private boolean testCheckMate(Color color) {
+		if( !testCheck(color) )
+			return false;
+		
+		List<ChessPiece> pieces = piecesOnColor(color) ;
+		
+		for( ChessPiece p : pieces ) {
+			boolean mat[][] = p.possiblesMoves();
+			
+			// percorrendo o tabuleiro
+			for(int i=0; i< board.getRows(); i++)
+				for(int j=0; j<board.getColumns(); j++) {
+					
+					if( mat[i][j] ) { // se for uma posicao valida
+						Position source = p.getChessPosition().toPosition();
+						Position target = new Position(i,j);
+						ChessPiece piece = (ChessPiece) makeMove(source, target);
+						if( !testCheck( color ) ) {
+							undoMove(source, target, piece);
+							return false;
+						}
+						undoMove(source, target, piece);
+					}
+				}
+			
+		}
+		
+		return true;
+		
+		
+	}
+	private void printTable(String msg,ChessPiece p) {
+		if( p == null ) {
+			System.out.println(" p == null");
+			return;
+		}
+		boolean mat[][] = p.possiblesMoves();
+		System.out.print(msg + ": ");
+		for(int i=0; i<mat.length; i++)
+			for( int j=0; j<mat[i].length; j++)
+				if(mat[i][j])
+					System.out.print("[" + i + "," + j + "]" + mat[i][j] );
+		
+		System.out.println();
 	}
 
 	/**
@@ -192,18 +266,12 @@ public class ChessMatch {
 	}
 	
 	private void initialSetup() {
-		placeNewPiece('c', 2, new Rook(board, Color.WHITE));
-		placeNewPiece('d', 2, new Rook(board, Color.WHITE));
-		placeNewPiece('e', 2, new Rook(board, Color.WHITE));
-		placeNewPiece('e', 1, new Rook(board, Color.WHITE));
-		placeNewPiece('d', 1, new King(board, Color.WHITE));
-
-		placeNewPiece('c', 7, new Rook(board, Color.BLACK));
-		placeNewPiece('c', 8, new Rook(board, Color.BLACK));
-		placeNewPiece('d', 7, new Rook(board, Color.BLACK));
-		placeNewPiece('e', 7, new Rook(board, Color.BLACK));
-		placeNewPiece('e', 8, new Rook(board, Color.BLACK));
-		placeNewPiece('d', 8, new King(board, Color.BLACK));
+		placeNewPiece('f', 1, new Rook(board, Color.WHITE));
+		placeNewPiece('b', 2, new Rook(board,Color.WHITE));
+		placeNewPiece('e', 2 , new King(board, Color.WHITE));
+		
+		placeNewPiece('a', 7, new King (board,Color.BLACK));
+		placeNewPiece('f', 2, new Rook(board,Color.BLACK));
 	}
 
 	public List<ChessPiece> getCapturedPieces() {
