@@ -27,7 +27,7 @@ public class Rook extends ChessPiece{
 		}
 		
 		// testa se existe mais uma posicao e se essa posicao é de uma peca adversaria
-		if( getBoard().positionExists(p) && IsThereOpponentPiece(p) )
+		if( getBoard().positionExists(p) && isThereOpponentPiece(p) )
 			mat[p.getRow()][p.getColumn()] = true;
 		
 		
@@ -41,7 +41,7 @@ public class Rook extends ChessPiece{
 		}
 		
 		// testa se existe mais uma posicao e se essa posicao é de uma peca adversaria
-		if( getBoard().positionExists(p) && IsThereOpponentPiece(p) )
+		if( getBoard().positionExists(p) && isThereOpponentPiece(p) )
 			mat[p.getRow()][p.getColumn()] = true;
 		
 		// Right (Movimentos a direita)
@@ -54,7 +54,7 @@ public class Rook extends ChessPiece{
 		}
 		
 		// testa se existe mais uma posicao e se essa posicao é de uma peca adversaria
-		if( getBoard().positionExists(p) && IsThereOpponentPiece(p) )
+		if( getBoard().positionExists(p) && isThereOpponentPiece(p) )
 			mat[p.getRow()][p.getColumn()] = true;
 
 		//below (movimentos abaixo)
@@ -67,7 +67,7 @@ public class Rook extends ChessPiece{
 		}
 		
 		// testa se existe mais uma posicao e se essa posicao é de uma peca adversaria
-		if( getBoard().positionExists(p) && IsThereOpponentPiece(p) )
+		if( getBoard().positionExists(p) && isThereOpponentPiece(p) )
 			mat[p.getRow()][p.getColumn()] = true;
 			
 		return mat;

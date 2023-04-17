@@ -1,10 +1,16 @@
 package boardgame;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import chess.Color;
+
 public class Board {
 	private int rows;
 	private int columns;
 	Piece [][] pieces;
 
+	
 	public Board(int rows, int columns) {
 		if (rows < 1 || columns < 1 )
 			throw new BoardException("Error creatin Board: there must be a last 1 row and 1 column");
@@ -72,6 +78,29 @@ public class Board {
 		return columns;
 	}
 	
+	public List<Piece> getPieces(){
+		List<Piece> list = new ArrayList<>();
+		
+		for(Piece []rows : pieces)
+			for( Piece p : rows )
+				if( p!= null )
+					list.add(p);
+		
+		
+		return list;
+	}
+	
+	public List<Piece> getPieces(Color color){
+		List<Piece> list = new ArrayList<>();
+		
+		for(Piece []rows : pieces)
+			for( Piece p : rows )
+				if( p != null )
+					if( p.getColor() == color )
+						list.add(p);
+			
+		return list;
+	}
 	
 
 }

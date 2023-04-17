@@ -1,5 +1,7 @@
 package boardgame;
 
+import chess.Color;
+
 /**
  * Representa uma Peça em um jogo de tabuleiro
  * @author LUIS ARF
@@ -9,9 +11,11 @@ public abstract class Piece {
 	
 	protected Position position;	// Posicao a que se refere a peca no tabuleiro
 	private Board board;			// Tabuleiro onde se encontra a peca
+	private Color color;
 	
-	public Piece(Board board) {
+	public Piece(Board board,Color color) {
 		this.board = board;
+		this.color = color;
 	}
 
 	/**
@@ -20,6 +24,10 @@ public abstract class Piece {
 	 */
 	public Board getBoard() {
 		return board;
+	}
+	
+	public Color getColor() {
+		return color;
 	}
 	
 	/**

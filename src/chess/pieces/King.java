@@ -1,6 +1,9 @@
 package chess.pieces;
 
+import java.util.List;
+
 import boardgame.Board;
+import boardgame.Piece;
 import boardgame.Position;
 import chess.ChessPiece;
 import chess.Color;
@@ -32,9 +35,22 @@ public class King extends ChessPiece{
 		return mat;
 	}
 	
+	private boolean positionInCheck(Position position) {
+		// mudar esse metodo
+		/*Color color = getColor() == Color.WHITE? Color.BLACK : Color.WHITE;
+		List<Piece> pieces = getBoard().getPieces(color);
+		
+		for( Piece p : pieces )
+			if( !(p instanceof King) )
+				if( p.possibleMove(position) )
+					return true;
+		*/
+		return false;
+	}
+	
 	
 	private boolean canMove(Position position) {
-		return getBoard().piece(position) == null || IsThereOpponentPiece(position);
+		return (getBoard().piece(position) == null || isThereOpponentPiece(position)  ) && !positionInCheck(position);
 	}
 
 	private void movement(boolean [][] mat,int increaseRow,int increaseColumn) {

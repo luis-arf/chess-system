@@ -1,7 +1,6 @@
 package chess;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +8,7 @@ import boardgame.Board;
 import boardgame.Piece;
 import boardgame.Position;
 import chess.pieces.King;
+import chess.pieces.Pawn;
 import chess.pieces.Rook;
 
 /**
@@ -271,9 +271,13 @@ public class ChessMatch {
 		placeNewPiece('f', 1, new Rook(board, Color.WHITE));
 		placeNewPiece('b', 2, new Rook(board,Color.WHITE));
 		placeNewPiece('e', 2 , new King(board, Color.WHITE));
+		placeNewPiece('c', 2, new Pawn(board, Color.WHITE));
+		placeNewPiece('h', 2, new Pawn(board, Color.WHITE));
 		
+		placeNewPiece('h', 3, new Rook(board,Color.BLACK));
 		placeNewPiece('a', 7, new King (board,Color.BLACK));
-		placeNewPiece('f', 2, new Rook(board,Color.BLACK));
+		placeNewPiece('f', 4, new Rook(board,Color.BLACK));
+		placeNewPiece('d', 4, new Rook(board,Color.BLACK));
 	}
 
 	public List<ChessPiece> getCapturedPieces() {
