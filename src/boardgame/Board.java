@@ -66,7 +66,7 @@ public class Board {
 		return piece(pos) != null;
 	}
 	
-	private boolean positionExists(int row, int column) {
+	public boolean positionExists(int row, int column) {
 		return row >= 0 && row< rows && column >=0 && column < columns; 
 	}
 

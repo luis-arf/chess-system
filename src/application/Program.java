@@ -21,7 +21,9 @@ public class Program {
 	//	for( ChessPiece p : pieces )
 	//		p.print();
 		
-		 while( !chessMatch.isCheckMate() ) {
+
+ 		 while( !chessMatch.isCheckMate() ) {
+ 
 		 	
 			try {
 				UI.clearScreen();
@@ -51,6 +53,7 @@ public class Program {
 		}
 		UI.clearScreen();
 		UI.printMatch(chessMatch);
+		
 		
 	}
 }
